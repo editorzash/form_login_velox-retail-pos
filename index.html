@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Autentikasi — VELOX Cloud POS</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #10B981;
+      --primary-hover: #059669;
+      --primary-light: #064E3B;
+      --primary-border: #047857;
+      --primary-glow: rgba(16, 185, 129, 0.3);
+      --bg-page: #0A0A0B;
+      --bg-card: #111113;
+      --bg-subtle: #18181B;
+      --border: #27272A;
+      --text: #FAFAFA;
+      --muted: #A1A1AA;
+      --input-bg: #18181B;
+      --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background Ambient Glows */
+    .ambient-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 { top: -100px; left: -100px; }
+    .glow-2 { bottom: -120px; right: -120px; }
+
+    /* Main Container */
+    .login-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 640px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      overflow: hidden;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* LEFT HERO PANEL */
+    .hero-panel {
+      background: linear-gradient(135deg, #09090b 0%, #111115 50%, #131d17 100%);
+      color: #FFFFFF;
+      padding: 48px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #FFFFFF;
+      margin-bottom: 32px;
+    }
+
+    .hero-logo-box {
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .hero-brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: block;
+      line-height: 1.1;
+    }
+
+    .hero-brand-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+
+    .hero-badge i {
+      color: #38BDF8;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 28px;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+    }
+
+    .h-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Live Operational Status Card */
+    .live-status-card {
+      position: relative;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .status-meta {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.7);
+      text-align: right;
+    }
+
+    /* RIGHT FORM PANEL */
+    .form-panel {
+      padding: 42px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--bg-card);
+    }
+
+    .form-header {
+      margin-bottom: 20px;
+    }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Quick Demo Role Switcher */
+    .demo-roles-section {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      margin-bottom: 20px;
+    }
+
+    .demo-roles-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-roles-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .role-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .role-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .role-pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 3px 8px var(--primary-glow);
+    }
+
+    .role-pill i {
+      font-size: 13px;
+    }
+
+    /* Mode Tabs (Email/Pass vs Quick PIN) */
+    .login-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 4px 12px 4px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: var(--primary);
+      border-radius: 99px;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.field-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      height: 44px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 14px 0 40px;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn-toggle-pass {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+
+    .btn-toggle-pass:hover {
+      color: var(--text);
+    }
+
+    /* PIN MODE SPECIFIC */
+    .pin-display-wrapper {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .pin-dots-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 12px 0 16px 0;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.2s;
+    }
+
+    .pin-dot.filled {
+      background: var(--primary);
+      transform: scale(1.15);
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .keypad-btn {
+      height: 46px;
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .keypad-btn:hover {
+      background: var(--border);
+      transform: scale(0.98);
+    }
+
+    .keypad-btn:active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Options Row */
+    .form-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      font-size: 12.5px;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .remember-label input {
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .forgot-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px var(--primary-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px var(--primary-glow);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Direct Bypass Link */
+    .bypass-action {
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .btn-bypass {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 99px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .btn-bypass:hover {
+      color: var(--text);
+      border-color: var(--muted);
+      background: var(--border);
+    }
+
+    /* Bottom Security Info */
+    .form-footer-info {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .sec-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-left: 4px solid #10B981;
+    }
+
+    .toast.info {
+      border-left: 4px solid var(--primary);
+    }
+
+    .toast.error {
+      border-left: 4px solid #EF4444;
+    }
+
+    /* Simple Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--shadow-card);
+      animation: modalPop 0.25s ease-out;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .login-wrapper {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+      .hero-panel {
+        display: none;
+      }
+      .form-panel {
+        padding: 32px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glow Backgrounds -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Main Login Card Container -->
+  <div class="login-wrapper">
+
+    <!-- LEFT PANEL: Hero & Visual Branding -->
+    <div class="hero-panel">
+      <div class="hero-top">
+        <a href="../velox-retail-pos/index.html" class="hero-brand" title="Buka Aplikasi Langsung">
+          <div class="hero-logo-box">V</div>
+          <div>
+            <span class="hero-brand-name">VELOX</span>
+            <span class="hero-brand-tag">Retail POS OS v2.4</span>
+          </div>
+        </a>
+
+        <div class="hero-badge">
+          <i class="fa-solid fa-barcode"></i>
+          <span>PORTAL POS & BACKOFFICE RESMI</span>
+        </div>
+
+        <h1 class="hero-title">Keyboard-First & Barcode-Ready untuk Kasir Supermarket & Ritel</h1>
+        <p class="hero-desc">Sistem Kasir Ritel Berkecepatan Tinggi & Manajemen Inventori</p>
+
+        <div class="hero-features">
+          
+        <div class="hero-feature-item">
+          <div class="h-icon-box"><i class="fa-solid fa-barcode"></i></div>
+          <span>Pindai barcode USB/Bluetooth instan tanpa jeda millisecond</span>
+        </div>
+        
+        <div class="hero-feature-item">
+          <div class="h-icon-box"><i class="fa-solid fa-keyboard"></i></div>
+          <span>Shortcut navigasi keyboard lengkap (F1-F12) untuk kasir pro</span>
+        </div>
+        
+        <div class="hero-feature-item">
+          <div class="h-icon-box"><i class="fa-solid fa-boxes-packing"></i></div>
+          <span>Kelola hingga 50.000+ SKU barang dengan pelacakan mutasi stok</span>
+        </div>
+        
+        <div class="hero-feature-item">
+          <div class="h-icon-box"><i class="fa-solid fa-tags"></i></div>
+          <span>Dukungan multi-harga (Grosir, Eceran, Member, Promo Bertingkat)</span>
+        </div>
+        
+        </div>
+      </div>
+
+      <div class="live-status-card">
+        <div class="status-indicator">
+          <div class="pulse-dot"></div>
+          <span>Sistem Online & Siap Pakai</span>
+        </div>
+        <div class="status-meta">
+          <span>Multi-Terminal v3.2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Interactive Login Form -->
+    <div class="form-panel">
+      <div>
+        <!-- Form Header -->
+        <div class="form-header">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:34px; height:34px; border-radius:8px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px;">
+              V
+            </div>
+            <div>
+              <h2 class="form-title" style="margin-bottom:0;">Masuk Sistem</h2>
+              <p style="font-size:12px; color:var(--muted); font-weight:600;">VELOX Cloud POS</p>
+            </div>
+          </div>
+          <p class="form-subtitle">Pilih akun demonstrasi atau masukkan kredensial kasir Anda.</p>
+        </div>
+
+        <!-- Quick Demo Accounts Selector -->
+        <div class="demo-roles-section">
+          <div class="demo-roles-label">
+            <span>Akun Demo Cepat</span>
+            <span style="color:var(--primary); font-size:10px;">Klik 1x untuk Isi Otomatis</span>
+          </div>
+          <div class="demo-roles-pills">
+            <button type="button" class="role-pill active" id="pillAdmin" onclick="setDemoAccount('admin')">
+              <i class="fa-solid fa-crown" style="color:#F59E0B;"></i>
+              <span>Super Admin</span>
+            </button>
+            <button type="button" class="role-pill" id="pillMgr" onclick="setDemoAccount('mgr')">
+              <i class="fa-solid fa-user-tie" style="color:#3B82F6;"></i>
+              <span>Manajer</span>
+            </button>
+            <button type="button" class="role-pill" id="pillCashier" onclick="setDemoAccount('cashier')">
+              <i class="fa-solid fa-cash-register" style="color:#10B981;"></i>
+              <span>Kasir POS</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs: Email & Password VS Quick PIN -->
+        <div class="login-tabs">
+          <button type="button" class="tab-btn active" id="tabEmail" onclick="switchTab('email')">
+            <i class="fa-solid fa-envelope"></i> Email / Akun
+          </button>
+          <button type="button" class="tab-btn" id="tabPin" onclick="switchTab('pin')">
+            <i class="fa-solid fa-key"></i> PIN Kasir Cepat
+          </button>
+        </div>
+
+        <!-- MAIN FORM -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <!-- Select Outlet / Branch -->
+          <div class="form-group">
+            <label class="form-label" for="outletSelect">Pilih Cabang / Outlet</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-store field-icon"></i>
+              <select class="form-select" id="outletSelect">
+                <option value="VELOX Mart Kemang" selected>VELOX Mart Kemang</option><option value="VELOX Superstore Gading Serpong" >VELOX Superstore Gading Serpong</option><option value="VELOX Express BSD" >VELOX Express BSD</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SECTION A: Email & Password -->
+          <div id="sectionEmail">
+            <div class="form-group">
+              <label class="form-label" for="inputEmail">Email / Username</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope field-icon"></i>
+                <input type="text" class="form-input" id="inputEmail" value="director@velox.io" placeholder="nama@domain.id" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputPassword">Kata Sandi</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock field-icon"></i>
+                <input type="password" class="form-input" id="inputPassword" value="••••••••" placeholder="Masukkan kata sandi" required>
+                <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility()" aria-label="Lihat sandi">
+                  <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION B: PIN Keypad Mode -->
+          <div id="sectionPin" style="display:none;">
+            <div class="pin-display-wrapper">
+              <label class="form-label" style="text-align:center;">Masukkan 6 Digit PIN Kasir</label>
+              <div class="pin-dots-container" id="pinDots">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+              </div>
+              <input type="hidden" id="inputPinVal" value="">
+            </div>
+
+            <div class="keypad-grid">
+              <button type="button" class="keypad-btn" onclick="pressKey('1')">1</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('2')">2</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('3')">3</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('4')">4</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('5')">5</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('6')">6</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('7')">7</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('8')">8</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('9')">9</button>
+              <button type="button" class="keypad-btn" style="color:#EF4444;" onclick="pressKey('clear')"><i class="fa-solid fa-trash-can"></i></button>
+              <button type="button" class="keypad-btn" onclick="pressKey('0')">0</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('back')"><i class="fa-solid fa-delete-left"></i></button>
+            </div>
+          </div>
+
+          <!-- Form Options: Remember & Forgot -->
+          <div class="form-options" id="rowOptions">
+            <label class="remember-label">
+              <input type="checkbox" id="chkRemember" checked>
+              <span>Ingat sesi di perangkat ini</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Lupa sandi?</a>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit" id="btnSubmit">
+            <span>Masuk ke Dashboard</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Direct Bypass to Target POS -->
+        <div class="bypass-action">
+          <a href="../velox-retail-pos/index.html" class="btn-bypass" title="Bypass langsung ke aplikasi tanpa login">
+            <span>Langsung buka VELOX POS</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="form-footer-info">
+        <div class="sec-badge">
+          <i class="fa-solid fa-shield-halved" style="color:#10B981;"></i>
+          <span>Enkripsi TLS 256-Bit</span>
+        </div>
+        <span>&copy; 2026 VELOX Inc.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Element -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Forgot Password Helper Modal -->
+  <div class="modal-backdrop" id="forgotModal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:18px; font-weight:700;">Reset Kredensial POS</h3>
+        <button type="button" onclick="closeForgotModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:18px;">
+        Untuk keamanan kasir dan proteksi data penjualan, pemulihan sandi atau reset PIN kasir dapat dilakukan melalui <b>Super Admin Cabang</b> atau hubungi tim IT Internal.
+      </p>
+      <div style="background:var(--bg-subtle); padding:12px; border-radius:8px; font-size:12.5px; margin-bottom:20px;">
+        <div><b>WhatsApp Bantuan:</b> +62 812-3456-7890</div>
+        <div style="margin-top:4px;"><b>Email:</b> support@velox.id</div>
+      </div>
+      <button type="button" class="btn-submit" onclick="closeForgotModal()">Tutup</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    const DEMO_ACCOUNTS = {"admin": {"name": "Store Director", "email": "director@velox.io", "pin": "888999", "role": "Retail Director"}, "mgr": {"name": "Head of Inventory", "email": "inventory@velox.io", "pin": "444555", "role": "Logistics & Shift Mgr"}, "cashier": {"name": "Fast Cashier 01", "email": "cashier01@velox.io", "pin": "123456", "role": "Lead Terminal Cashier"}};
+
+    const TARGET_URL = "../velox-retail-pos/index.html";
+    let currentRole = 'admin';
+    let currentTab = 'email';
+    let pinBuffer = '';
+
+    // Switch Demo Accounts
+    function setDemoAccount(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-pill').forEach(el => el.classList.remove('active'));
+      
+      if(role === 'admin') document.getElementById('pillAdmin').classList.add('active');
+      if(role === 'mgr') document.getElementById('pillMgr').classList.add('active');
+      if(role === 'cashier') document.getElementById('pillCashier').classList.add('active');
+
+      const acc = DEMO_ACCOUNTS[role];
+      document.getElementById('inputEmail').value = acc.email;
+      document.getElementById('inputPassword').value = 'password123';
+      
+      pinBuffer = acc.pin;
+      updatePinDisplay();
+      
+      showToast('info', `Mode Akun: ${acc.role} (${acc.name})`);
+    }
+
+    // Switch Tab Mode (Email vs PIN)
+    function switchTab(tab) {
+      currentTab = tab;
+      const tabEmail = document.getElementById('tabEmail');
+      const tabPin = document.getElementById('tabPin');
+      const sectionEmail = document.getElementById('sectionEmail');
+      const sectionPin = document.getElementById('sectionPin');
+      const rowOptions = document.getElementById('rowOptions');
+
+      if (tab === 'email') {
+        tabEmail.classList.add('active');
+        tabPin.classList.remove('active');
+        sectionEmail.style.display = 'block';
+        sectionPin.style.display = 'none';
+        rowOptions.style.display = 'flex';
+        document.getElementById('inputEmail').required = true;
+      } else {
+        tabEmail.classList.remove('active');
+        tabPin.classList.add('active');
+        sectionEmail.style.display = 'none';
+        sectionPin.style.display = 'block';
+        rowOptions.style.display = 'none';
+        document.getElementById('inputEmail').required = false;
+        // set pin to active role's pin if empty
+        if (!pinBuffer) {
+          pinBuffer = DEMO_ACCOUNTS[currentRole].pin;
+          updatePinDisplay();
+        }
+      }
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('inputPassword');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        passInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+
+    // Keypad Logic
+    function pressKey(key) {
+      if (key === 'clear') {
+        pinBuffer = '';
+      } else if (key === 'back') {
+        pinBuffer = pinBuffer.slice(0, -1);
+      } else if (pinBuffer.length < 6) {
+        pinBuffer += key;
+      }
+      updatePinDisplay();
+
+      if (pinBuffer.length === 6) {
+        // Auto trigger submit on full 6 digits
+        setTimeout(() => {
+          submitForm();
+        }, 300);
+      }
+    }
+
+    function updatePinDisplay() {
+      const dots = document.querySelectorAll('#pinDots .pin-dot');
+      dots.forEach((dot, idx) => {
+        if (idx < pinBuffer.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
+      });
+      document.getElementById('inputPinVal').value = pinBuffer;
+    }
+
+    // Handle Form Submit
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      submitForm();
+    }
+
+    function submitForm() {
+      const btn = document.getElementById('btnSubmit');
+      const outlet = document.getElementById('outletSelect').value;
+      const acc = DEMO_ACCOUNTS[currentRole];
+
+      if (currentTab === 'pin' && pinBuffer.length < 4) {
+        showToast('error', 'Silakan masukkan minimal 4-6 digit PIN');
+        return;
+      }
+
+      // Loading state
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Memverifikasi Akses...</span>`;
+
+      // Simpan session dummy ke localStorage agar aplikasi target dapat menyapa user
+      try {
+        const authData = {
+          isLoggedIn: true,
+          role: acc.role,
+          name: acc.name,
+          email: acc.email,
+          outlet: outlet,
+          loginAt: new Date().toISOString()
+        };
+        localStorage.setItem('form_login_velox-retail-pos_auth', JSON.stringify(authData));
+      } catch(err) {}
+
+      showToast('success', `Login Berhasil! Selamat bertugas di ${outlet}`);
+
+      // Redirect smoothly to target POS application
+      setTimeout(() => {
+        window.location.href = TARGET_URL;
+      }, 800);
+    }
+
+    // Toast Functionality
+    function showToast(type, message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type} show`;
+
+      let icon = 'fa-circle-info';
+      if(type === 'success') icon = 'fa-circle-check';
+      if(type === 'error') icon = 'fa-triangle-exclamation';
+
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    // Forgot Modal Helpers
+    function openForgotModal() {
+      document.getElementById('forgotModal').classList.add('open');
+    }
+    function closeForgotModal() {
+      document.getElementById('forgotModal').classList.remove('open');
+    }
+
+    // Initialize with Admin account
+    window.addEventListener('DOMContentLoaded', () => {
+      setDemoAccount('admin');
+    });
+  </script>
+</body>
+</html>
